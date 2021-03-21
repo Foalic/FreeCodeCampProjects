@@ -99,6 +99,3 @@ def arithmetic_arranger(problems, solved=False):
         arranged_problems = arranged_problems + "\n" + answer_part
     arranged_problems = "".join(arranged_problems)
     return arranged_problems
-
-
-print(arithmetic_arranger(["1234 -     7    ", "182 - 1234", "199 + 2345"], True))
