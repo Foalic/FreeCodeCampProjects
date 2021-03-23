@@ -16,8 +16,8 @@ def add_time(start, duration, weekday=None):
 
     minutes_total = minutes_start + minutes_duration
     minutes_final_int = minutes_total % 60
-    if minutes_final_int == 0:
-        minutes_final_str = '00'
+    if minutes_final_int < 10:
+        minutes_final_str = '0' + str(minutes_final_int)
     else:
         minutes_final_str = str(minutes_final_int)
 
@@ -33,7 +33,7 @@ def add_time(start, duration, weekday=None):
     start_insensitive = start.lower()
     if 'am' in start_insensitive:
         if hours_start_12 == '12':
-            hours_start_24 = 00
+            hours_start_24 = 0
         else:
             hours_start_24 = int(hours_start_12)
     elif 'pm' in start_insensitive:
@@ -48,7 +48,7 @@ def add_time(start, duration, weekday=None):
     ## Add hours to start time
     hours_total = hours_start_24 + hours_to_add
     hours_final_24 = hours_total % 24
-    days_final = days_to_add + (hours_final_24 // 24)
+    days_final = days_to_add + (hours_total // 24)
 
     ## Convert back to 12 hour
     if hours_final_24 > 12:
@@ -61,9 +61,9 @@ def add_time(start, duration, weekday=None):
 
     ## Decide on am or pm
     if hours_final_24 >= 12 and hours_final_24 < 24:
-        time_of_day = 'pm'
+        time_of_day = 'PM'
     else:
-        time_of_day = 'am'
+        time_of_day = 'AM'
 
     ## Get the weekday that the final time arrives on
     dict_weekdays = {0:'Sunday', 1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday'}
