@@ -9,7 +9,7 @@ class Category:
     def __str__(self):
         header = self.make_header_str()
         body = self.make_body_str()
-        end_line = "Total: " + str(self.balance)
+        end_line = "Total: " + "{0:.2f}".format(self.balance)
 
         print_representation = header + body + end_line
         return print_representation
@@ -31,24 +31,27 @@ class Category:
         width_of_amount = 7
 
         in_dep_descr = "initial deposit"
-        in_dep = str(self.ledger[0]["amount"])
-        initial_deposit = in_dep_descr + (" " * (width_of_descr - len(in_dep_descr))) + (" " * (width_of_amount - len(str(in_dep)))) + in_dep
+        in_dep = self.ledger[0]["amount"]
+        formatted_in_dep = "{0:.2f}".format(in_dep)
+
+        initial_deposit = in_dep_descr + (" " * (width_of_descr - len(in_dep_descr))) + (" " * (width_of_amount - len(formatted_in_dep))) + formatted_in_dep
         for item in self.ledger:
             amount = item.get("amount")
+            formatted_amount = "{0:.2f}".format(amount)
             descr = item.get("description")
-            items = descr + (" " * (width_of_descr -len(descr))) + (" " * (width_of_amount - len(str(amount)))) + str(amount) + "\n"
+            items = descr + (" " * (width_of_descr -len(descr))) + (" " * (width_of_amount - len(formatted_amount))) + formatted_amount + "\n"
 
         body = initial_deposit + "\n" + items
         return body
 
     def deposit(self, amount, description=""):
-        amount = float(amount)
+        amount = amount
         self.ledger.append({"amount": amount, "description": description})
         self.balance += amount
 
 
     def withdraw(self, amount, description=""):
-        amount = float(amount)
+        amount = amount
         if self.check_funds(amount):
             self.ledger.append({"amount": -amount, "description": description})
             self.balance -= amount
@@ -76,12 +79,13 @@ class Category:
 
 
 def create_spend_chart(categories):
+    
     pass
 
 
 food = Category("food")
 clothes = Category("clothes")
-food.deposit(200, "Aubergine")
+food.deposit(200.50, "Aubergine")
 food.transfer(100, clothes)
 
 print(food.ledger)
