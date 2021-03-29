@@ -80,17 +80,41 @@ class Category:
 
 
 
-def create_spend_chart(categories):
-    name_lists, full_amount_spent = get_category_namelists_and_amounts_spent(categories)
-    rounded_percentage_dict = get_rounded_percentage_of_spent(categories, full_amount_spent)
-    header = "Percentage spent by category\n"
-    body_list = make_body_list()
+def get_longest_list_length(name_lists):
+    longest_list_length = 0
+    for list in name_lists:
+        if len(list) > longest_list_length:
+            longest_list_length = len(list)
+    return longest_list_length
 
-    bar_separator = "---" * len(categories) + "-"
 
-    prepped_name_lists = make_vertical_category_names(name_lists)
-    chart = prepped_name_lists, full_amount_spent, rounded_percentage_dict, body_list
-    return chart
+def add_spaces_to_shorter_lists(name_lists):
+    longest_list_length = get_longest_list_length(name_lists)
+    for list in name_lists:
+        if len(list) < longest_list_length:
+            for extra_char in range((longest_list_length - len(list))):
+                list.append(" ")
+    return name_lists
+
+
+## Function to sort list and format for representation
+def make_vertical_category_names(name_lists):
+    merged_name_list = add_spaces_to_shorter_lists(name_lists)
+    sorted_name_list = []
+    first_list = merged_name_list[0]
+
+    for index,char in enumerate(first_list):
+        sorted_name_list.append(f" {first_list[index]} ")
+
+        for second_index, next_list in enumerate(merged_name_list):
+            if next_list == first_list:
+                continue
+            sorted_name_list.append(f" {next_list[index]} ")
+            if second_index == len(merged_name_list) -1:
+                sorted_name_list.append(" \n")
+
+    vertical_category_names = "".join(sorted_name_list)
+    return vertical_category_names
 
 
 def get_category_namelists_and_amounts_spent(categories):
@@ -119,6 +143,7 @@ def get_rounded_percentage_of_spent(categories, full_amount_spent):
 
 def make_body_list():
     body_list = []
+
     for number in range(11):
         number_setup = " " + str(number) + "0| "
         if number == 0:
@@ -127,28 +152,29 @@ def make_body_list():
             number_setup = str(number) + "0| "
         body_list.append(number_setup)
     body_list.reverse()
+
     return body_list
 
 
-def make_vertical_category_names(name_lists):
-    longest_list_length = 0
-    for list in name_lists:
-        if len(list) > longest_list_length:
-            longest_list_length = len(list)
-    # return longest_list_length
+def create_spend_chart(categories):
+    name_lists, full_amount_spent = get_category_namelists_and_amounts_spent(categories)
+    rounded_percentage_dict = get_rounded_percentage_of_spent(categories, full_amount_spent)
 
-    for list in name_lists:
-        if len(list) < longest_list_length:
-            for extra_char in range((longest_list_length - len(list))):
-                list.append(" ")
-    #return name_lists
-
-    ## Need to code a list which combines corresponding indices from each list together
-
+    header = "Percentage spent by category\n"
+    body_list = make_body_list()
+    bar_separator = "---" * len(categories) + "-"
+    vertical_category_names = make_vertical_category_names(name_lists)
+    
+    chart = vertical_category_names#, full_amount_spent, rounded_percentage_dict, body_list
+    return chart
 
 
 food = Category("food")
 clothes = Category("clothes")
+bank = Category("bank")
+family = Category("family")
+super = Category("super")
+
 food.deposit(200.50, "Aubergine")
 food.transfer(100, clothes)
 
@@ -160,4 +186,4 @@ print(clothes.ledger)
 print(clothes.get_balance())
 
 print(food)
-print(create_spend_chart([food, clothes]))
+print(create_spend_chart([food, clothes, bank, family, super]))
