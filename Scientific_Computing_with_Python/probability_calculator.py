@@ -1,3 +1,4 @@
+import copy
 import random
 
 class Hat:
@@ -24,11 +25,9 @@ class Hat:
 
 
 
-def get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn):
-    matched_experiments = 0
-    drawn_balls = hat.draw(num_balls_drawn)
+
+def make_drawn_balls_list_to_dictionary(drawn_balls):
     drawn_balls_dict = dict()
-    is_match = False
 
     for ball in drawn_balls:
         if ball not in drawn_balls_dict:
@@ -36,36 +35,45 @@ def get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn):
         else:
             drawn_balls_dict[ball] += 1
 
-    for key_drawn,value_drawn in drawn_balls_dict.items():
-        for key_expected,value_expected in expected_balls.items():
+    return drawn_balls_dict
+
+
+def get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn):
+    hat_copy = copy.deepcopy(hat)
+    drawn_balls = hat_copy.draw(num_balls_drawn)
+    balls_matched = 0
+    is_match = False
+
+    drawn_balls_dict = make_drawn_balls_list_to_dictionary(drawn_balls)
+
+    for key_expected,value_expected in expected_balls.items():
+        for key_drawn,value_drawn in drawn_balls_dict.items():
             if key_expected == key_drawn:
                 if value_drawn >= value_expected:
-                    is_match = True
+                    ball_matches = True
                     break
                 else:
                     continue
         else:
             continue
 
-        if is_match:
-            matched_experiments += 1
+        if ball_matches:
+            balls_matched += 1
 
-    return matched_experiments
+    if balls_matched == len(expected_balls):
+        is_match = True
+
+    return is_match
 
 
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
+    matched_experiments = 0
 
     for experiment in range(num_experiments):
-        matched_experiments= get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn)
+        is_match = get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn)
+        if is_match:
+            matched_experiments += 1
 
     probability = matched_experiments / num_experiments
     return probability
-
-#
-# hat = Hat(red=9, blue=10, green=30)
-# print(hat.contents)
-# print(hat.draw(4))
-# print(hat.contents)
-#
-# print(experiment(hat, {"red":1, "blue":1, "green":1}, 20, 2000))
