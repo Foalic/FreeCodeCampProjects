@@ -55,7 +55,6 @@ def get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn):
 
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
-    balls_in_hat = [ball for ball in hat.contents]
 
     for experiment in range(num_experiments):
         matched_experiments= get_number_of_matched_experiments(hat, expected_balls, num_balls_drawn)
