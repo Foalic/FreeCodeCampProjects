@@ -1,6 +1,4 @@
-import copy
 import random
-# Consider using the modules imported above.
 
 class Hat:
 
@@ -13,15 +11,14 @@ class Hat:
 
     def draw(self, num_balls_drawn):
         drawn_balls = []
-        balls_left = [ball for ball in self.contents]
 
         if num_balls_drawn > len(self.contents):
             drawn_balls = self.contents
         else:
             for draw in range(num_balls_drawn):
-                rand_ball = random.randint(0, (len(balls_left)-1))
-                drawn_balls.append(balls_left[rand_ball])
-                balls_left.pop(rand_ball)
+                rand_ball = random.randint(0, (len(self.contents)-1))
+                drawn_balls.append(self.contents[rand_ball])
+                self.contents.pop(rand_ball)
 
         return drawn_balls
 
