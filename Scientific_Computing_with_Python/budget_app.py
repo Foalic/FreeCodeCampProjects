@@ -29,6 +29,22 @@ class Category:
         return header + "\n"
 
 
+    def make_item_lines_for_body(self, width_of_descr, width_of_amount):
+        items = []
+
+        for item in self.ledger:
+            amount = item.get("amount")
+            if amount >= 0:
+                continue
+            formatted_amount = "{0:.2f}".format(amount)
+            descr = item.get("description")
+            if len(descr) > width_of_descr:
+                descr = descr[:23]
+            items.append(descr + (" " * (width_of_descr -len(descr))) + (" " * (width_of_amount - len(formatted_amount))) + formatted_amount + "\n")
+
+        return items
+
+
     def make_body_str(self):
         width_of_descr = 23
         width_of_amount = 7
@@ -39,16 +55,7 @@ class Category:
 
         initial_deposit = in_dep_descr + (" " * (width_of_descr - len(in_dep_descr))) + (" " * (width_of_amount - len(formatted_in_dep))) + formatted_in_dep
 
-        items = []
-        for item in self.ledger:
-            amount = item.get("amount")
-            if amount >= 0:
-                continue
-            formatted_amount = "{0:.2f}".format(amount)
-            descr = item.get("description")
-            if len(descr) > width_of_descr:
-                descr = descr[:23]
-            items.append(descr + (" " * (width_of_descr -len(descr))) + (" " * (width_of_amount - len(formatted_amount))) + formatted_amount + "\n")
+        items = self.make_item_lines_for_body(width_of_descr, width_of_amount)
 
         body = initial_deposit + "\n" + "".join(items)
         return body
